@@ -4,7 +4,7 @@ from cnn import *
 
 
 def main():
-    imsize = 27
+    imsize = 49
     input_shape = (imsize, imsize, 3)
 
     generateData(size=imsize, skip=10)

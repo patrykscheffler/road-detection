@@ -15,7 +15,7 @@ class RoadsCnn:
 
         self.batch_size = 32
         self.repeat_training = 0
-        self.epochs = 2
+        self.epochs = 40
         self.steps_per_epoch = 15000
         self.validation_steps = 800
 
@@ -68,10 +68,19 @@ class RoadsCnn:
 
     def create_model(self):
         model = Sequential()
-        model.add(Convolution2D(128, (3, 3), activation='relu',
+        model.add(Convolution2D(64, (6, 6), activation='relu',
                                 input_shape=self.input_shape))
         model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.25))
         model.add(Convolution2D(128, (3, 3), activation='relu'))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.25))
+        model.add(Convolution2D(256, (3, 3), activation='relu'))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.25))
+        model.add(Convolution2D(256, (3, 3), activation='relu'))
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        model.add(Dropout(0.25))
         model.add(Flatten())
         model.add(Dense(512, activation='relu'))
         model.add(Dense(1, activation='sigmoid'))

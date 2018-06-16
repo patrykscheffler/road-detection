@@ -14,7 +14,7 @@ def roads(image):
 
 
 def main():
-    imsize = 27
+    imsize = 49
     input_shape = (imsize, imsize, 3)
 
     cnn = RoadsCnn(input_shape)
@@ -30,7 +30,7 @@ def predict_generator(gen, cnn, save_path='test_images_predict/'):
         print('Predict: ' + img_name)
         pre = cnn.predict(img, skip=3)
         # imsave(save_path + img_name, normalize(pre), cmap='gray')
-        imsave(save_path + img_name, pre, cmap='gray')
+        imsave(save_path + img_name + '.jpg', pre, cmap='gray')
 
 
 if __name__ == '__main__':
