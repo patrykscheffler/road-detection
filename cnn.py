@@ -29,10 +29,18 @@ class RoadsCnn:
             path_train_data, path_test_data)
 
         if os.path.isfile(self.save_file_name):
+            print('Loading weights...')
             self._model.load_weights(self.save_file_name)
 
         for i in range(self.repeat_training):
             self.train_model()
+
+    def create_roads_cnn(self):
+        self.create_model()
+
+        if os.path.isfile(self.save_file_name):
+            print('Loading weights...')
+            self._model.load_weights(self.save_file_name)
 
     def generate_train_and_test_keras_generator(self, train_dir, test_dir):
         datagen = ImageDataGenerator(
@@ -90,13 +98,13 @@ class RoadsCnn:
     def predict(self, image, skip=1):
         arr = []
         for x in self.img_pre_gen(image, skip):
-            arr.append([i[0] for i in self._model.predict(x)])
+            pre = self._model.predict(x)
+            arr.append([i[0] for i in pre])
 
-        return arr
+        return np.repeat(arr, skip, axis=0).repeat(skip, axis=1)
 
     def img_pre_gen(self, image, skip=1):
         for x in range(0, len(image) - self.input_shape[0], skip):
-            print(x)
             arr = []
             for y in range(0, len(image[0]) - self.input_shape[1], skip):
                 arr.append(

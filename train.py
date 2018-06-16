@@ -7,22 +7,15 @@ def main():
     imsize = 27
     input_shape = (imsize, imsize, 3)
 
-    generateData(size=imsize, skip=5)
+    generateData(size=imsize, skip=10)
 
-    # cnn = retinaCnn(input_shape)
-    # cnn.create_cnn(path_train_data=path_drive_train + path_dataset,
-    #                path_test_data=path_drive_test + path_dataset)
+    cnn = RoadsCnn(input_shape)
+    cnn.create_cnn(path_train_data=path_train + path_dataset,
+                   path_test_data=path_test + path_dataset)
 
-    # predict_generator(loadDataFromPathWithLabel(
-    #     'test_images/', norm=True), cnn)
+    cnn.train_model()
+
     return
-
-
-def predict_generator(gen, cnn, save_path='test_images_predict/'):
-    for img, img_name in gen:
-        print('predict: ' + img_name)
-        pre = cnn.predict(img, skip=1)
-        imsave(save_path + img_name, normalize(pre), cmap='gray')
 
 
 if __name__ == '__main__':

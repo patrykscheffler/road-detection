@@ -10,8 +10,9 @@ path_train = "data/training/"
 path_y = "target/"
 path_x = "input/"
 
-path_positive = "positive/"
-path_negative = "negative/"
+path_dataset = "dataset/"
+path_positive = "dataset/positive/"
+path_negative = "dataset/negative/"
 
 
 white = 1
@@ -72,6 +73,7 @@ def loadDataFromPathWithLabel(path, norm=False):
     for file in listDirWithSort(path):
         print(file)
         img = data.imread(path + file).astype(np.float64)
+        img = img[:,:,:3]
 
         if norm:
             img = normalize(img)
@@ -88,16 +90,22 @@ def checkPathExistsCreateIfNot(path):
 
 def prepareTrainingSet(name, train_x, train_y, path_pos, path_neg, skip=5, size=27, skip_black=True):
     for x in range(0, len(train_x) - size, skip):
-        print("x:", x)
         for y in range(0, len(train_x) - size, skip):
-
             img = train_x[x:x + size, y:y + size, :]
-            if train_y[x + size // 2, y + size // 2] == white:
+            if (train_y[x + size // 2 - 1, y + size // 2 - 1] == white and 
+                train_y[x + size // 2 - 1, y + size // 2] == white and
+                train_y[x + size // 2 - 1, y + size // 2 + 1] == white and
+                train_y[x + size // 2, y + size // 2 - 1] == white and
+                train_y[x + size // 2, y + size // 2] == white and
+                train_y[x + size // 2, y + size // 2 + 1] == white and
+                train_y[x + size // 2 + 1, y + size // 2 - 1] == white and
+                train_y[x + size // 2 + 1, y + size // 2] == white and
+                train_y[x + size // 2 + 1, y + size // 2 + 1] == white):
                 imsave(path_pos + name + "_" + str(x) +
-                       "_" + str(y) + "_pos", img)
+                       "_" + str(y) + "_pos.jpg", img)
             else:
                 imsave(path_neg + name + "_" + str(x) +
-                       "_" + str(y) + "_neg", img)
+                       "_" + str(y) + "_neg.jpg", img)
 
 
 def normalize(image):
