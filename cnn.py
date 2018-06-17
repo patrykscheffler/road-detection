@@ -3,6 +3,7 @@ from keras.layers import Dense, Dropout, Activation, Flatten, Convolution2D, Max
 from keras.preprocessing.image import ImageDataGenerator
 
 import numpy as np
+import cv2
 import os
 
 
@@ -108,14 +109,18 @@ class RoadsCnn:
         arr = []
         for x in self.img_pre_gen(image, skip):
             pre = self._model.predict(x)
-            arr.append([i[0] for i in pre])
+            arr.append([0.0 if i[0] < 0.5 else 1.0 for i in pre])
 
-        return np.repeat(arr, skip, axis=0).repeat(skip, axis=1)
+        img = np.repeat(arr, skip, axis=0).repeat(skip, axis=1)
+        kernel = np.ones((5, 5), np.uint8)
+        opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+
+        return opening
 
     def img_pre_gen(self, image, skip=1):
-        for x in range(0, len(image) - self.input_shape[0], skip):
+        for x in range(1, len(image) - self.input_shape[0], skip):
             arr = []
-            for y in range(0, len(image[0]) - self.input_shape[1], skip):
+            for y in range(1, len(image[0]) - self.input_shape[1], skip):
                 arr.append(
                     np.array(image[x:x + self.input_shape[0], y:y + self.input_shape[1], :]))
             yield np.array(arr)
